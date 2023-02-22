@@ -1154,7 +1154,7 @@ chmod +x /var/www/ssl/update_ocsp_cache
 
 
 nginxWebConf(){
-if [[ $port = "443" ]]; then
+if [[ $port != "443" ]]; then
 cat << EOF >/etc/nginx/conf.d/80.conf
 server {
   listen 80 reuseport;
@@ -1646,7 +1646,7 @@ port=$(echo $vpsdomainP | cut -d: -f2| grep '^[[:digit:]]*$')
 
 path=$(jq -r '.inbounds[0].streamSettings.wsSettings.path' /opt/de_GWD/vtrui/config.json 2>/dev/null | grep -v '^null$')
 
-if [[ $port = "443" ]]; then
+if [[ $port != "443" ]]; then
 makeSSL_W
 
 ocspStapling
@@ -2004,7 +2004,7 @@ topDomain=$(echo $domain | rev | awk -F. '{print $1"."$2}' | rev)
 port=$(echo $vpsdomainP | cut -d: -f2 | grep '^[[:digit:]]*$')
 [[ -z $port ]] && port="443"
 
-if [[ $port != "443" ]]; then
+if [[ $port == "443" ]]; then
     echo -e "${GREEN}=============================== ${cRES}"
     echo -e "${GREEN} Cloudflare API KEY${cRES}"
     echo -e "${GREEN}=============================== ${cRES}"
@@ -2062,7 +2062,7 @@ installNginx
 
 installXray
 
-if [[ $port == "443" ]]; then
+if [[ $port != "443" ]]; then
 makeSSL_W
 else
 makeSSL_D
